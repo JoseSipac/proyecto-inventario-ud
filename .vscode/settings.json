@@ -1,0 +1,5 @@
+{
+    "appService.showBuildDuringDeployPrompt": false,
+    "appService.defaultWebAppToDeploy": "/subscriptions/254a256d-0246-400d-9f72-f10a6ea6bfef/resourceGroups/rg-inventario/providers/Microsoft.Web/sites/inventario-api-udv",
+    "appService.deploySubpath": "backend"
+}
