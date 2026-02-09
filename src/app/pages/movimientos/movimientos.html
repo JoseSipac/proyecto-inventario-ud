@@ -1,0 +1,129 @@
+<div class="movimientos-container">
+  
+  <!-- Barra superior -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="app-title">Inventario</span>
+
+      <a routerLink="/productos" class="nav-link">Productos</a>
+      <a routerLink="/movimientos" class="nav-link">Movimientos</a>
+      <a routerLink="/reportes" class="nav-link">Reportes</a>
+    </div>
+
+    <div class="top-bar-right">
+      <span class="user-role" *ngIf="rolUsuario">
+        Rol: {{ rolUsuario }}
+      </span>
+       <button class="btn-logout" type="button" (click)="logout()">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+
+  <h2>Movimientos de Inventario</h2>
+  <div class="usuario-actual" *ngIf="rolUsuario">
+  Rol actual: {{ rolUsuario }}
+  </div>
+
+ <div class="panel" *ngIf="puedeRegistrarMovimientos(); else soloLecturaMovimientos">
+  <h3>Registrar movimiento (ADMIN / OPERADOR)</h3>
+
+    <form (ngSubmit)="registrarMovimiento()">
+      <div class="form-row">
+        <label for="producto">Producto</label>
+        <select
+          id="producto"
+          name="producto_id"
+          [(ngModel)]="producto_id"
+          required
+        >
+          <option [ngValue]="null">-- Seleccione --</option>
+          <option *ngFor="let p of productos" [ngValue]="p.id">
+            {{ p.codigo }} - {{ p.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="tipo">Tipo de movimiento</label>
+        <select id="tipo" name="tipo" [(ngModel)]="tipo">
+          <option value="ENTRADA">ENTRADA</option>
+          <option value="SALIDA">SALIDA</option>
+          <option value="DEVOLUCION">DEVOLUCIÓN</option>
+          <option value="AJUSTE">AJUSTE</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="cantidad">Cantidad</label>
+        <input
+          id="cantidad"
+          name="cantidad"
+          type="number"
+          [(ngModel)]="cantidad"
+        />
+      </div>
+
+      <div class="form-row form-row-full">
+        <label for="obs">Observaciones</label>
+        <input
+          id="obs"
+          name="observaciones"
+          [(ngModel)]="observaciones"
+        />
+      </div>
+
+      <button type="submit">Guardar movimiento</button>
+    </form>
+
+    <div *ngIf="errorMsg" class="error">
+      {{ errorMsg }}
+    </div>
+    <div *ngIf="successMsg" class="success">
+      {{ successMsg }}
+    </div>
+  </div>
+
+  <ng-template #soloLecturaMovimientos>
+  <div class="panel">
+    <h3>Registrar movimiento</h3>
+    <p>
+      Su rol ({{ rolUsuario }}) tiene acceso solo de lectura.
+      Puede consultar el historial de movimientos, pero no registrar nuevos.
+    </p>
+  </div>
+</ng-template>
+
+  <div class="panel">
+    <h3>Últimos movimientos</h3>
+
+    <div *ngIf="cargandoMovimientos">Cargando movimientos...</div>
+
+    <table *ngIf="!cargandoMovimientos && movimientos.length > 0">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Producto</th>
+          <th>Tipo</th>
+          <th>Cantidad</th>
+          <th>Usuario</th>
+          <th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of movimientos">
+          <td>{{ m.fecha | date:'short' }}</td>
+          <td>{{ m.codigo_producto }} - {{ m.nombre_producto }}</td>
+          <td>{{ m.tipo }}</td>
+          <td>{{ m.cantidad }}</td>
+          <td>{{ m.nombre_usuario }}</td>
+          <td>{{ m.observaciones }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!cargandoMovimientos && movimientos.length === 0">
+      No hay movimientos registrados.
+    </div>
+  </div>
+</div>

@@ -1,0 +1,118 @@
+<div class="productos-container">
+  
+  <div class="top-bar">
+  <div class="top-bar-left">
+    <span class="app-title">Inventario</span>
+
+    <a routerLink="/productos" class="nav-link active">Productos</a>
+    <a routerLink="/movimientos" class="nav-link">Movimientos</a>
+    <a routerLink="/reportes" class="nav-link">Reportes</a>
+  </div>
+
+  <div class="top-bar-right">
+    <span class="user-role" *ngIf="rolUsuario">
+      Rol: {{ rolUsuario }}
+    </span>
+    <button class="btn-logout" type="button" (click)="logout()">
+      Cerrar sesión
+    </button>
+  </div>
+</div>
+
+
+    <h2>Gestión de Productos</h2>
+<div class="alerta-stock" *ngIf="productosCriticos.length > 0">
+  <strong>Alerta:</strong> {{ productosCriticos.length }} producto(s) en o por debajo del stock mínimo.
+</div>
+
+ <div class="panel" *ngIf="esAdmin(); else soloLecturaProductos">
+  <h3>Nuevo producto (solo ADMIN)</h3>
+    <form (ngSubmit)="crearProducto()">
+      <div class="form-row">
+        <label for="codigo">Código *</label>
+        <input id="codigo" name="codigo" [(ngModel)]="codigo" required />
+      </div>
+
+      <div class="form-row">
+        <label for="nombre">Nombre *</label>
+        <input id="nombre" name="nombre" [(ngModel)]="nombre" required />
+      </div>
+
+      <div class="form-row">
+        <label for="categoria">Categoría</label>
+        <input id="categoria" name="categoria" [(ngModel)]="categoria" />
+      </div>
+
+      <div class="form-row">
+        <label for="proveedor">Proveedor</label>
+        <input id="proveedor" name="proveedor" [(ngModel)]="proveedor" />
+      </div>
+
+      <div class="form-row">
+        <label for="stock_minimo">Stock mínimo</label>
+        <input
+          id="stock_minimo"
+          name="stock_minimo"
+          type="number"
+          [(ngModel)]="stock_minimo"
+          min="0"
+        />
+      </div>
+
+      <button type="submit">Guardar producto</button>
+    </form>
+
+    <div *ngIf="errorMsg" class="error">
+      {{ errorMsg }}
+    </div>
+    <div *ngIf="successMsg" class="success">
+      {{ successMsg }}
+    </div>
+
+  </div>
+
+    <ng-template #soloLecturaProductos>
+    <div class="panel">
+      <h3>Productos (solo lectura)</h3>
+      <p>
+        Su rol ({{ rolUsuario }}) no tiene permiso para registrar nuevos productos,
+        pero puede consultar el listado.
+      </p>
+    </div>
+  </ng-template>
+
+  <div class="panel">
+    <h3>Listado de productos</h3>
+
+    <div *ngIf="cargando">Cargando productos...</div>
+
+    <table *ngIf="!cargando && productos.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Proveedor</th>
+          <th>Stock actual</th>
+          <th>Stock mínimo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of productos" [ngClass]="getClaseStock(p)">
+          <td>{{ p.id }}</td>
+          <td>{{ p.codigo }}</td>
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.categoria }}</td>
+          <td>{{ p.proveedor }}</td>
+          <td>{{ p.stock_actual }}</td>
+          <td>{{ p.stock_minimo }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!cargando && productos.length === 0">
+      No hay productos registrados.
+    </div>
+  </div>
+</div>

@@ -1,0 +1,124 @@
+<div class="reportes-container">
+  
+ <div class="top-bar">
+    <div class="top-bar-left">
+      <span class="app-title">Inventario</span>
+
+      <a routerLink="/productos" class="nav-link">Productos</a>
+      <a routerLink="/movimientos" class="nav-link">Movimientos</a>
+      <a routerLink="/reportes" class="nav-link">Reportes</a>
+    </div>
+
+    <div class="top-bar-right">
+      <span class="user-role" *ngIf="rolUsuario">
+      Rol: {{ rolUsuario }}
+    </span>
+      <button class="btn-logout" type="button" (click)="logout()">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+
+  <h2>Reportes de Inventario</h2>
+
+  <div *ngIf="errorMsg" class="error">
+    {{ errorMsg }}
+  </div>
+
+  <!-- Stock por categoría -->
+  <div class="panel">
+    <h3>Stock por categoría</h3>
+
+    <div *ngIf="cargandoStock">Cargando datos...</div>
+
+    <table *ngIf="!cargandoStock && stockCategorias.length > 0">
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Total productos</th>
+          <th>Total stock</th>
+          <th>Productos críticos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of stockCategorias">
+          <td>{{ s.categoria }}</td>
+          <td>{{ s.total_productos }}</td>
+          <td>{{ s.total_stock }}</td>
+          <td>{{ s.productos_criticos }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!cargandoStock && stockCategorias.length === 0">
+      No hay datos de categorías.
+    </div>
+  </div>
+
+  <!-- Productos más vendidos -->
+  <div class="panel">
+    <h3>Productos más vendidos</h3>
+
+    <div *ngIf="cargandoVendidos">Cargando datos...</div>
+
+    <table *ngIf="!cargandoVendidos && masVendidos.length > 0">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Cantidad vendida</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of masVendidos">
+          <td>{{ p.codigo }}</td>
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.categoria || 'SIN CATEGORÍA' }}</td>
+          <td>{{ p.total_vendido }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!cargandoVendidos && masVendidos.length === 0">
+      No hay datos de productos vendidos.
+    </div>
+  </div>
+
+  <!-- Sugerencias de reabastecimiento -->
+<div class="panel">
+  <h3>Sugerencias de reabastecimiento</h3>
+
+  <div *ngIf="cargandoSugerencias">Cargando sugerencias...</div>
+
+  <table *ngIf="!cargandoSugerencias && sugerencias.length > 0">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Categoría</th>
+        <th>Proveedor</th>
+        <th>Stock actual</th>
+        <th>Stock mínimo</th>
+        <th>Cant. sugerida a comprar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of sugerencias">
+        <td>{{ s.codigo }}</td>
+        <td>{{ s.nombre }}</td>
+        <td>{{ s.categoria }}</td>
+        <td>{{ s.proveedor || 'N/D' }}</td>
+        <td>{{ s.stock_actual }}</td>
+        <td>{{ s.stock_minimo }}</td>
+        <td>{{ s.cantidad_sugerida }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!cargandoSugerencias && sugerencias.length === 0">
+    No hay productos que requieran reabastecimiento según el stock mínimo definido.
+  </div>
+</div>
+
+</div>
