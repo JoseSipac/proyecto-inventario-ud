@@ -3,17 +3,19 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { getConnection } = require('./db');
+
 const movimientosRoutes = require('./routes/movimientos.routes');
 const authRoutes = require('./routes/auth.routes');
 const reportesRoutes = require('./routes/reportes.routes');
-
-// importar rutas
 const productosRoutes = require('./routes/productos.routes');
+const webhookRoutes = require("./routes/webhook.routes");
 
 const app = express();
 
-// Middlewares
 app.use(cors());
+
+app.use("/webhooks", webhookRoutes);
+
 app.use(express.json());
 
 // Ruta de prueba simple
@@ -41,22 +43,10 @@ app.get('/db-test', async (req, res) => {
   }
 });
 
-// 🔹 Prefijo para productos: /api/productos
-// Rutas de autenticación
+// Rutas normales
 app.use('/api/auth', authRoutes);
-
 app.use('/api/reportes', reportesRoutes);
-
-// Productos
 app.use('/api/productos', productosRoutes);
-
-// Movimientos
 app.use('/api/movimientos', movimientosRoutes);
 
-
-// Puerto (lee de .env o usa 3000 por defecto)
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Servidor API escuchando en http://localhost:${PORT}`);
-});
+module.exports = app;
